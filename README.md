@@ -4,7 +4,7 @@ VRMモデルとLive2DモデルをUnityで作られたゲーム内で共有でき
 
 ## 詳細説明
 Firebaseを使ってUnity上からモデルのアップロードとダウンロードができるシステム  
-VroidHubやTheSeedOnlineみたいなもの
+VroidHubやTheSeedOnlineみたいなもの  
 違いとしては、
 - サーバーを自分で建てられる  
 - Live2Dモデルに対応している  
