@@ -26,6 +26,25 @@ Assets/google-services.json
 Assets/mcs.rsp
 Assets/Editor Default Resources
 
+Assets/CVVTuberExample.meta
+Assets/DlibFaceLandmarkDetector.meta
+Assets/Firebase.meta
+Assets/Live2D.meta
+Assets/OpenCVForUnity.meta
+Assets/Parse.meta
+Assets/PlayServicesResolver.meta
+Assets/Plugins.meta
+Assets/StreamingAssets.meta
+Assets/VRM.meta
+Assets/Prefabs.meta
+Assets/Scenes.meta
+Assets/csc.rsp.meta
+Assets/GoogleService-Info.plist.meta
+Assets/google-services.json.meta
+Assets/mcs.rsp.meta
+Assets/Editor Default Resources.meta
+
+
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
 # ===================================== #
