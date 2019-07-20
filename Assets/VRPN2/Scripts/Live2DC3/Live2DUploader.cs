@@ -1,0 +1,139 @@
+﻿using Firebase;
+using Firebase.Auth;
+using Firebase.Database;
+using Firebase.Storage;
+using Firebase.Unity.Editor;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using UnityEngine;
+using VRPN2.Live2DC3.Compressing;
+
+namespace VRPN2.Live2DC3.Upload
+{
+    public class Live2DUploader : MonoBehaviour
+    {
+
+        bool isUploading = false;
+        FirebaseUser CurrentUser;
+        DatabaseReference DB_ref;
+        FirebaseStorage Storage;
+        StorageReference Storage_ref;
+        StorageMetadata metadata = null;
+        /// <summary>
+        /// Init the ModelUploader
+        /// </summary>
+        /// <param name="targetURL">storage URL</param>
+        /// <param name="targetDBURL">DB URL</param>
+        /// <param name="user">Authenticated user data</param>
+        public Live2DUploader(string targetURL, string targetDBURL, FirebaseUser user)
+        {
+            FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(targetDBURL);
+            DB_ref = FirebaseDatabase.DefaultInstance.RootReference;
+            Storage = FirebaseStorage.GetInstance(targetURL);
+            Storage_ref = Storage.GetReferenceFromUrl(targetURL);
+            CurrentUser = user;
+        }
+
+        /// <summary>
+        /// Init the ModelUploader
+        /// </summary>
+        /// <param name="targetURL">storage URL</param>
+        /// <param name="targetDBURL">DB URL</param>
+        public Live2DUploader(string targetURL, string targetDBURL)
+        {
+            FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(targetDBURL);
+            DB_ref = FirebaseDatabase.DefaultInstance.RootReference;
+            Storage = FirebaseStorage.GetInstance(targetURL);
+            Storage_ref = Storage.GetReferenceFromUrl(targetURL);
+        }
+
+        public async Task UploadLive2D(string filepath)
+        {
+            var fileType = new MetadataChange();
+            //setup compressor
+            ModelCompressor comp = new ModelCompressor();
+            string data = null;
+            await Task.Run(() =>
+                            {
+                                data = comp.CompressAsync(filepath).Result;
+                            });
+            StorageReference moc3Path = Storage_ref.Child("VRP/" + CurrentUser.UserId + "/Live2D/" + Path.GetFileNameWithoutExtension(filepath) + "_model.json");
+            isUploading = true;
+            fileType.ContentType = "application/json";
+
+            await moc3Path.PutBytesAsync(System.Text.Encoding.UTF8.GetBytes(data), fileType).ContinueWith((Task<StorageMetadata> task) =>
+            {
+                Debug.Log("start uploading");
+                if (task.IsFaulted || task.IsCanceled)
+                {
+                    Debug.Log(task.Exception.ToString());
+                // Uh-oh, an error occurred!
+                isUploading = false;
+                }
+                else
+                {
+                metadata = task.Result;
+                    Debug.Log("Finished uploading...");
+                }
+                isUploading = false;
+            });
+        }
+
+        public bool GetUploadState()
+        {
+            return isUploading;
+        }
+
+        public void SetUserData(FirebaseUser user)
+        {
+            try
+            {
+                CurrentUser = user;
+
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
+        }
+
+        public void SetStorage(string url)
+        {
+            Storage = FirebaseStorage.GetInstance(url);
+            Storage_ref = Storage.GetReferenceFromUrl(url);
+        }
+
+        public void SetDataBase(string url)
+        {
+            FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(url);
+            DB_ref = FirebaseDatabase.DefaultInstance.RootReference;
+        }
+
+        async Task LoadDBData(DatabaseReference location)
+        {
+            var dataPair = new Dictionary<string, string>();
+            await location.GetValueAsync().ContinueWith(task =>
+            {
+                if (task.IsFaulted)
+                {
+                // Handle the error...
+                Debug.Log("couldn't load list from DB");
+                }
+                else if (task.IsCompleted)
+                {
+                    DataSnapshot snapshot = task.Result;
+                // Do something with snapshot...
+                IEnumerator<DataSnapshot> list = snapshot.Children.GetEnumerator();
+                    while (list.MoveNext())
+                    {
+                        DataSnapshot data = list.Current;
+                        dataPair.Add(data.ToString(), data.Child("name").Value.ToString());
+                    }
+                }
+            });
+
+        }
+    }
+}
