@@ -9,6 +9,7 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using VRPN2.Live2DC3.Compressing;
+using VRPN2.License;
 
 namespace VRPN2.Live2DC3.Upload
 {
@@ -21,6 +22,7 @@ namespace VRPN2.Live2DC3.Upload
         FirebaseStorage Storage;
         StorageReference Storage_ref;
         StorageMetadata metadata = null;
+        LicenseCreator creators;
         /// <summary>
         /// Init the ModelUploader
         /// </summary>
@@ -34,6 +36,7 @@ namespace VRPN2.Live2DC3.Upload
             Storage = FirebaseStorage.GetInstance(targetURL);
             Storage_ref = Storage.GetReferenceFromUrl(targetURL);
             CurrentUser = user;
+            creators = new LicenseCreator(user, DB_ref, Storage, Storage_ref);
         }
 
         /// <summary>
@@ -47,6 +50,7 @@ namespace VRPN2.Live2DC3.Upload
             DB_ref = FirebaseDatabase.DefaultInstance.RootReference;
             Storage = FirebaseStorage.GetInstance(targetURL);
             Storage_ref = Storage.GetReferenceFromUrl(targetURL);
+
         }
         /// <summary>
         /// upload the Live2D model to server
@@ -54,6 +58,7 @@ namespace VRPN2.Live2DC3.Upload
         /// <param name="filepath">Current live2D model.json file</param>
         public async Task UploadLive2D(string filepath)
         {
+            bool isUploaded = false;
             var fileType = new MetadataChange();
             //setup compressor
             ModelCompressor comp = new ModelCompressor();
@@ -62,7 +67,7 @@ namespace VRPN2.Live2DC3.Upload
                             {
                                 data = comp.CompressAsync(filepath).Result;
                             });
-            StorageReference moc3Path = Storage_ref.Child("VRP/" + CurrentUser.UserId + "/Live2D/" + Path.GetFileNameWithoutExtension(filepath) + "_model.json");
+            StorageReference moc3Path = Storage_ref.Child("VRPN/" + CurrentUser.UserId + "/Live2D/" + Path.GetFileNameWithoutExtension(filepath) + "_model.json");
             isUploading = true;
             fileType.ContentType = "application/json";
 
@@ -82,6 +87,7 @@ namespace VRPN2.Live2DC3.Upload
                 }
                 isUploading = false;
             });
+            if (isUploaded) await creators.LicenseUploader(new ModelLicense("Live2D", moc3Path.ToString(), "blackList", new List<string>()));
         }
         /// <summary>
         /// upload model status getter 
@@ -100,6 +106,7 @@ namespace VRPN2.Live2DC3.Upload
             try
             {
                 CurrentUser = user;
+                creators.SetUserData(user);
 
             }
             catch (Exception e)
@@ -115,6 +122,7 @@ namespace VRPN2.Live2DC3.Upload
         {
             Storage = FirebaseStorage.GetInstance(url);
             Storage_ref = Storage.GetReferenceFromUrl(url);
+            creators.SetStorage(url);
         }
         /// <summary>
         /// set the server database url
@@ -124,6 +132,7 @@ namespace VRPN2.Live2DC3.Upload
         {
             FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(url);
             DB_ref = FirebaseDatabase.DefaultInstance.RootReference;
+            creators.SetDataBase(url);
         }
         /// <summary>
         /// get model list data from server DB

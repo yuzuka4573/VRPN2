@@ -9,6 +9,7 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using VRM;
+using VRPN2.License;
 
 namespace VRPN2.VRM.Upload
 {
@@ -23,6 +24,7 @@ namespace VRPN2.VRM.Upload
         FirebaseStorage Storage;
         StorageReference Storage_ref;
         StorageMetadata metadata = null;
+        LicenseCreator creators;
         /// <summary>
         /// Init the ModelUploader
         /// </summary>
@@ -38,6 +40,7 @@ namespace VRPN2.VRM.Upload
             Storage = FirebaseStorage.GetInstance(targetURL);
             Storage_ref = Storage.GetReferenceFromUrl(targetURL);
             CurrentUser = user;
+            creators = new LicenseCreator(user,DB_ref,Storage,Storage_ref);
         }
 
         /// <summary>
@@ -58,8 +61,9 @@ namespace VRPN2.VRM.Upload
         /// <param name="filepath">Current VRM model path</param>
         public async Task UploadVRM(string filepath)
         {
+            bool isUploaded = false;
             var fileType = new MetadataChange();
-            StorageReference vrmPath = Storage_ref.Child("VRP/" + CurrentUser.UserId + "/vrm/" + Path.GetFileName(filepath));
+            StorageReference vrmPath = Storage_ref.Child("VRPN/" + CurrentUser.UserId + "/vrm/" + Path.GetFileName(filepath));
             //get thumbnail form vrm
             var context = new VRMImporterContext();
             byte[] vrmByte = null;
@@ -90,18 +94,23 @@ namespace VRPN2.VRM.Upload
             {
                 if (task.IsFaulted || task.IsCanceled)
                 {
+                    isUploaded = false;
                     Debug.Log(task.Exception.ToString());
-                            // Uh-oh, an error occurred!
-                            isUploading = false;
+                    // Uh-oh, an error occurred!
+                    isUploading = false;
                 }
                 else
                 {
-                            // Metadata contains file metadata such as size, content-type, and download URL.
-                            metadata = task.Result;
+                    isUploaded = true;
+                    // Metadata contains file metadata such as size, content-type, and download URL.
+                    metadata = task.Result;
                     Debug.Log("Finished uploading...");
+
                 }
                 isUploading = false;
             });
+
+            if(isUploaded) await creators.LicenseUploader(new ModelLicense("VRM", vrmPath.ToString(), "blackList", new List<string>()));
 
         }
         /// <summary>
@@ -113,14 +122,16 @@ namespace VRPN2.VRM.Upload
             return isUploading;
         }
         /// <summary>
-        /// set authed user data
+        /// Set the user authed data
         /// </summary>
-        /// <param name="user">Authed user data</param>
+        /// <param name="user">authed user data</param>
         public void SetUserData(FirebaseUser user)
         {
             try
             {
                 CurrentUser = user;
+                creators.SetUserData(user);
+
             }
             catch (Exception e)
             {
@@ -128,23 +139,24 @@ namespace VRPN2.VRM.Upload
             }
         }
         /// <summary>
-        /// set Server storage url
+        /// Set the server storage url
         /// </summary>
         /// <param name="url">storage url</param>
         public void SetStorage(string url)
         {
             Storage = FirebaseStorage.GetInstance(url);
             Storage_ref = Storage.GetReferenceFromUrl(url);
+            creators.SetStorage(url);
         }
-
         /// <summary>
-        /// set Server DB url
+        /// set the server database url
         /// </summary>
-        /// <param name="url">DB url</param>
+        /// <param name="url">database url</param>
         public void SetDataBase(string url)
         {
             FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(url);
             DB_ref = FirebaseDatabase.DefaultInstance.RootReference;
+            creators.SetDataBase(url);
         }
 
         /// <summary>

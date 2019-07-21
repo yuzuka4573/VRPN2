@@ -36,7 +36,7 @@ namespace VRPN2.Live2DC3.Load
         public async Task<List<Live2DProfile>> GetUserLive2DList(FirebaseUser user)
         {
             List<Live2DProfile> Live2DProfiles = new List<Live2DProfile>();
-            await FirebaseDatabase.DefaultInstance.RootReference.Child("VRP").Child(user.UserId).Child("live2d").GetValueAsync().ContinueWith(task =>
+            await FirebaseDatabase.DefaultInstance.RootReference.Child("VRPN").Child(user.UserId).Child("live2d").GetValueAsync().ContinueWith(task =>
             {
                 if (task.IsFaulted)
                 {

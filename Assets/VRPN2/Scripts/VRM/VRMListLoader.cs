@@ -39,7 +39,7 @@ namespace VRPN2.VRM.Load
         {
             List<VRMProfile> VRMProfiles = new List<VRMProfile>();
 
-            await FirebaseDatabase.DefaultInstance.RootReference.Child("VRP").Child(user.UserId).Child("vrm").GetValueAsync().ContinueWith(task =>
+            await FirebaseDatabase.DefaultInstance.RootReference.Child("VRPN").Child(user.UserId).Child("vrm").GetValueAsync().ContinueWith(task =>
             {
                 if (task.IsFaulted)
                 {
