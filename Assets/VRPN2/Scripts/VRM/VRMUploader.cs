@@ -52,7 +52,10 @@ namespace VRPN2.VRM.Upload
             Storage = FirebaseStorage.GetInstance(targetURL);
             Storage_ref = Storage.GetReferenceFromUrl(targetURL);
         }
-
+        /// <summary>
+        /// upload VRM file to server
+        /// </summary>
+        /// <param name="filepath">Current VRM model path</param>
         public async Task UploadVRM(string filepath)
         {
             var fileType = new MetadataChange();
@@ -101,12 +104,18 @@ namespace VRPN2.VRM.Upload
             });
 
         }
-
+        /// <summary>
+        /// Get VRM upload status
+        /// </summary>
+        /// <returns>current upload status</returns>
         public bool GetUploadState()
         {
             return isUploading;
         }
-
+        /// <summary>
+        /// set authed user data
+        /// </summary>
+        /// <param name="user">Authed user data</param>
         public void SetUserData(FirebaseUser user)
         {
             try
@@ -118,19 +127,31 @@ namespace VRPN2.VRM.Upload
                 Debug.Log(e);
             }
         }
-
+        /// <summary>
+        /// set Server storage url
+        /// </summary>
+        /// <param name="url">storage url</param>
         public void SetStorage(string url)
         {
             Storage = FirebaseStorage.GetInstance(url);
             Storage_ref = Storage.GetReferenceFromUrl(url);
         }
 
+        /// <summary>
+        /// set Server DB url
+        /// </summary>
+        /// <param name="url">DB url</param>
         public void SetDataBase(string url)
         {
             FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(url);
             DB_ref = FirebaseDatabase.DefaultInstance.RootReference;
         }
 
+        /// <summary>
+        /// Get model list from DB
+        /// </summary>
+        /// <param name="location">DB path</param>
+        /// <returns>model List</returns>
         async Task LoadDBData(DatabaseReference location)
         {
             var dataPair = new Dictionary<string, string>();

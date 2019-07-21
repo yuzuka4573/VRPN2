@@ -1,6 +1,8 @@
 ﻿using Crosstales.FB;
+/*
 using CVVTuber;
 using CVVTuber.Live2DCubism3;
+*/
 using Live2D.Cubism.Core;
 using System;
 using System.Collections.Generic;
@@ -54,6 +56,7 @@ public class TestScript : MonoBehaviour
 
     List<VRMProfile> VRMProfiles;
     List<Live2DProfile> Live2DProfiles;
+    /*
     [SerializeField]
     GameObject live2DcvLoader;
     [SerializeField]
@@ -63,6 +66,7 @@ public class TestScript : MonoBehaviour
     Live2DCubism3HeadRotationController HRC;
     Live2DCubism3FaceAnimationController FAC;
     CVVTuberControllManager CVVCM;
+    */
     VRMLoader vrnloader;
 
     private void Awake()
@@ -104,7 +108,9 @@ public class TestScript : MonoBehaviour
 
     }
 
-    // Update is called once per frame
+/// <summary>
+/// Update Live2D or VRM model to server
+/// </summary>
     public async void Runner()
     {
 
@@ -140,7 +146,9 @@ public class TestScript : MonoBehaviour
         else Debug.LogError("uploader still running");
     }
 
-
+    /// <summary>
+    /// Email-password Auth test
+    /// </summary>
     public async void AuthTest()
     {
         UpdateEmail();
@@ -190,7 +198,9 @@ public class TestScript : MonoBehaviour
     {
         pass = p.text;
     }
-
+    /// <summary>
+    /// Commpressed Live2D loading test
+    /// </summary>
     public void LoadingTest()
     {
 
@@ -309,10 +319,12 @@ public class TestScript : MonoBehaviour
                 CubismModel target = GameObject.FindGameObjectWithTag("Player").GetComponent<CubismModel>();
                 target.gameObject.AddComponent<ObjectMover>();
                 target.gameObject.AddComponent<LookAround>();
+                /*
                 target.gameObject.GetComponent<Animator>().runtimeAnimatorController = animation;
                 target.transform.Translate(0, 1.5f, 0);
                 var loader = Instantiate(live2DcvLoader);
                 loader.name = live2DcvLoader.name;
+                
                 HRC = GameObject.Find("Live2DCubism3CVVTuberExample/Live2DCubism3HeadRotationController").GetComponent<Live2DCubism3HeadRotationController>();
                 FAC = GameObject.Find("Live2DCubism3CVVTuberExample/Live2DCubism3FaceAnimationController").GetComponent<Live2DCubism3FaceAnimationController>();
                 CVVCM = GameObject.Find("Live2DCubism3CVVTuberExample/Live2DCubism3ControllManager").GetComponent<CVVTuberControllManager>();
@@ -321,11 +333,13 @@ public class TestScript : MonoBehaviour
                 FAC.live2DCubism3Model = target;
                 GameObject.Find("Live2DCubism3CVVTuberExample/Live2DCubism3KeyInputExpressionController").GetComponent<Live2DCubism3KeyInputExpressionController>().target = target.gameObject.GetComponent<Animator>();
                 GameObject.Find("Live2DCubism3CVVTuberExample/Live2DCubism3ControllManager").GetComponent<CVVTuberControllManager>().enabled = true;
+                */
             }
             else if (data.Type == "application/vrm")
             {
                 Debug.Log("Stasrt loading VRM");
                 await vrmloader.LoadVRM(data.File);
+                /*
                 var Instance = Instantiate(VRMcvLoader);
                 Instance.name = VRMcvLoader.name;
                 var currentGameObject = GameObject.Find("VRMCVVTuberExample/VRMControllManager");
@@ -333,6 +347,7 @@ public class TestScript : MonoBehaviour
                 loader.meta = GameObject.FindGameObjectWithTag("Player").GetComponent<VRM.VRMMeta>();
                 GameObject.Find("VRMCVVTuberExample/DlibFaceLandmarkGetter").GetComponent<DlibFaceLandmarkGetter>().screen = GameObject.Find("Canvas/RawImage").GetComponent<RawImage>();
                 currentGameObject.GetComponent<CVVTuber.VRM.VRMCVVTuberControllManager>().enabled = true;
+                */
             }
         }
         else

@@ -48,7 +48,10 @@ namespace VRPN2.Live2DC3.Upload
             Storage = FirebaseStorage.GetInstance(targetURL);
             Storage_ref = Storage.GetReferenceFromUrl(targetURL);
         }
-
+        /// <summary>
+        /// upload the Live2D model to server
+        /// </summary>
+        /// <param name="filepath">Current live2D model.json file</param>
         public async Task UploadLive2D(string filepath)
         {
             var fileType = new MetadataChange();
@@ -80,12 +83,18 @@ namespace VRPN2.Live2DC3.Upload
                 isUploading = false;
             });
         }
-
+        /// <summary>
+        /// upload model status getter 
+        /// </summary>
+        /// <returns></returns>
         public bool GetUploadState()
         {
             return isUploading;
         }
-
+        /// <summary>
+        /// Set the user authed data
+        /// </summary>
+        /// <param name="user">authed user data</param>
         public void SetUserData(FirebaseUser user)
         {
             try
@@ -98,19 +107,29 @@ namespace VRPN2.Live2DC3.Upload
                 Debug.Log(e);
             }
         }
-
+        /// <summary>
+        /// Set the server storage url
+        /// </summary>
+        /// <param name="url">storage url</param>
         public void SetStorage(string url)
         {
             Storage = FirebaseStorage.GetInstance(url);
             Storage_ref = Storage.GetReferenceFromUrl(url);
         }
-
+        /// <summary>
+        /// set the server database url
+        /// </summary>
+        /// <param name="url">database url</param>
         public void SetDataBase(string url)
         {
             FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(url);
             DB_ref = FirebaseDatabase.DefaultInstance.RootReference;
         }
-
+        /// <summary>
+        /// get model list data from server DB
+        /// </summary>
+        /// <param name="location">DB locations</param>
+        /// <returns>DB data</returns>
         async Task LoadDBData(DatabaseReference location)
         {
             var dataPair = new Dictionary<string, string>();

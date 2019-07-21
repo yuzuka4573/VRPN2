@@ -18,10 +18,10 @@ namespace VRPN2.Live2DC3.Load
         /// </summary>
         /// <param name="name">model name</param>
         /// <param name="filePaht">DB path</param>
-        public Live2DProfile(string name, string filePaht)
+        public Live2DProfile(string name, string filePath)
         {
             modelName = name;
-            path = filePaht;
+            path = filePath;
         }
     }
 

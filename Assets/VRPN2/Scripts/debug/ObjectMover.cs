@@ -10,7 +10,9 @@ public class ObjectMover : MonoBehaviour
     {
         target = gameObject.transform;
     }
-    // Update is called once per frame
+/// <summary>
+/// Camera control with AWSD
+/// </summary>
     void Update()
     {
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) {

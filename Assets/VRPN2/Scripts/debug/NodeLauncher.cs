@@ -14,7 +14,10 @@ public class NodeLauncher : MonoBehaviour
     Text type;
     Button launcher;
     TestScript test;
-
+    /// <summary>
+    /// setup the VRM information
+    /// </summary>
+    /// <param name="data">current VRM model profile</param>
     public void SetupVRM(VRMProfile data)
     {
         test = GameObject.Find("EventObject").GetComponent<TestScript>();
@@ -22,7 +25,10 @@ public class NodeLauncher : MonoBehaviour
         fileType = "VRM";
         SetupNode();
     }
-
+    /// <summary>
+    /// setup the Live2D information
+    /// </summary>
+    /// <param name="data">current Live2D model profile></param>
     public void SetupLive2D(Live2DProfile data)
     {
         test = GameObject.Find("EventObject").GetComponent<TestScript>();
@@ -30,7 +36,9 @@ public class NodeLauncher : MonoBehaviour
         fileType = "Live2D";
         SetupNode();
     }
-
+    /// <summary>
+    /// Load model information to Node
+    /// </summary>
     void SetupNode()
     {
         name = GameObject.Find("Canvas/Scroll View/Viewport/Content/" + gameObject.name + "/Name").GetComponent<Text>();
@@ -43,7 +51,9 @@ public class NodeLauncher : MonoBehaviour
         launcher.onClick.AddListener(LoadModel);
 
     }
-
+    /// <summary>
+    /// Load trigger with model format
+    /// </summary>
     public void LoadModel()
     {
         switch (fileType)

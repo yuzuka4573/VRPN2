@@ -64,7 +64,11 @@ namespace VRPN2.VRM.Load
             return VRMProfiles;
         }
 
-
+        /// <summary>
+        /// get the model thumnail from base64 data
+        /// </summary>
+        /// <param name="base64Data">base64 encoded thumnail data</param>
+        /// <returns>Texture2D thumnail data</returns>
         public Texture2D GetVRMThumnail(string base64Data)
         {
             Texture2D convertedImg = new Texture2D(1, 1);
