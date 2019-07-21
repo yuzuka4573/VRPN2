@@ -18,11 +18,12 @@ VroidHubやTheSeedOnlineみたいなもの
 - [UniVRM](https://github.com/vrm-c/UniVRM) 0.53+  
 - [Live2D Cubism 3 SDK for Unity](https://live2d.github.io/) R12+  
 - [Firebase Unity SDK](https://firebase.google.com/docs/unity/setup) 6.0.0+  
-(以下はデモでアレば良いもの、有料アセットもあるので適宜コードを無効化してください)  
+以下はデモで必要です  
+- crosstales FileBrowser  
+(以下はデモでアレば良いもの、有料アセットもあるので適宜コードのコメントアウトを解除して使ってください)  
 - OpenCV for unity  
 - DlibFaceLandmarkDetector  
 - CVVTuberExample  
-- crosstales FileBrowser  
 また、Configuration内のScripting Runtime Versionを.NET 4.x Equivalentに変更しておいてください  
 これとは別に、Firebaseのセッティングをしておいてください([こちら](https://firebase.google.com/docs/unity/setup)を参照)  
 ## 実装予定リスト  
